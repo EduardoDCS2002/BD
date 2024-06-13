@@ -1,0 +1,88 @@
+CREATE SCHEMA IF NOT EXISTS IndustryInsight DEFAULT CHARACTER SET utf8;
+USE IndustryInsight;
+#DROP SCHEMA IndustryInsight;
+
+#Adicionei FK workshop para a inscrição Workshop INT que referencia o ID de um workshop
+
+CREATE TABLE IF NOT EXISTS Workshop (
+ID INT NOT NULL AUTO_INCREMENT,
+Nome VARCHAR(75) NOT NULL,
+Data DATE NOT NULL,
+Duracao TIME NOT NULL,
+Gastos DECIMAL(8,2) NOT NULL,
+AvaliacaoQuantitativa DECIMAL(2,1),
+Morada VARCHAR(75) NOT NULL,
+CodigoPostal VARCHAR(20) NOT NULL,
+	PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Cliente (
+ID INT NOT NULL AUTO_INCREMENT,
+NIF INT NOT NULL UNIQUE,
+Nome VARCHAR(75) NOT NULL,
+Email VARCHAR(100) NOT NULL,
+Sexo CHAR(1) NOT NULL,
+DataNascimento DATE NOT NULL,
+	PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Empresa (
+ID INT NOT NULL AUTO_INCREMENT,
+NIF INT NOT NULL UNIQUE,
+Nome VARCHAR(75) NOT NULL,
+Setor VARCHAR(50) NOT NULL,
+Telemovel VARCHAR(20) NOT NULL,
+Email VARCHAR(100) NOT NULL,
+	PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Inscricao (
+ID INT NOT NULL AUTO_INCREMENT,
+Preco DECIMAL(8,2) NOT NULL,
+DataInscricao DATE NOT NULL,
+Cliente INT NOT NULL,
+Workshop INT NOT NULL,
+	PRIMARY KEY (ID, Cliente),
+	FOREIGN KEY (Cliente) REFERENCES Cliente (ID),
+	FOREIGN KEY (Workshop) REFERENCES Workshop (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Avaliacao (
+ID INT NOT NULL AUTO_INCREMENT,
+DataOmissao DATE NOT NULL,
+AvaliacaoQuantitativa DECIMAL(2,1) NOT NULL,
+Comentario VARCHAR(250) NULL,
+Cliente INT NOT NULL,
+Workshop INT NOT NULL,
+	PRIMARY KEY (ID),
+	FOREIGN KEY (Cliente) REFERENCES Cliente (ID),
+	FOREIGN KEY (Workshop) REFERENCES Workshop (ID)
+);
+
+CREATE TABLE IF NOT EXISTS EmpresaCliente (
+Empresa INT NOT NULL,
+Cliente INT NOT NULL,
+	PRIMARY KEY (Empresa, Cliente),
+	FOREIGN KEY (Empresa) REFERENCES Empresa (ID),
+	FOREIGN KEY (Cliente) REFERENCES Cliente (ID)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS ClienteWorkshop (
+Cliente INT NOT NULL,
+Workshop INT NOT NULL,
+	PRIMARY KEY (Cliente, Workshop),
+	FOREIGN KEY (Cliente) REFERENCES Cliente (ID) ,
+	FOREIGN KEY (Workshop) REFERENCES Workshop (ID)
+);
+
+
+CREATE TABLE IF NOT EXISTS EmpresaWorkshop (
+Empresa INT NOT NULL,
+Workshop INT NOT NULL,
+Preco DECIMAL(8,2) NOT NULL,
+	PRIMARY KEY (Empresa, Workshop),
+	FOREIGN KEY (Empresa) REFERENCES Empresa (ID),
+	FOREIGN KEY (Workshop) REFERENCES Workshop (ID)
+);
